@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Scribble to Digital</title>
+  <style>
+    body {
+      text-align: center;
+      background: #f0f0f0;
+    }
+    canvas {
+      border: 2px solid #333;
+      background: #fff;
+      cursor: crosshair;
+    }
+    button {
+      margin-top: 10px;
+      padding: 8px 16px;
+      font-size: 16px;
+    }
+  </style>
+</head>
+<body>
+  <h2>Scribble to Digital</h2>
+  <canvas id="scribbleCanvas" width="600" height="400"></canvas>
+  <br>
+  <button onclick="clearCanvas()">Clear</button>
+  <button onclick="saveImage()">Save</button>
+
+  <script>
+    const canvas = document.getElementById("scribbleCanvas");
+    const ctx = canvas.getContext("2d");
+
+    let drawing = false;
+
+    function startDraw(e) {
+      drawing = true;
+      ctx.beginPath();
+      ctx.moveTo(e.offsetX, e.offsetY);
+    }
+
+    function draw(e) {
+      if (!drawing) return;
+      ctx.lineTo(e.offsetX, e.offsetY);
+      ctx.strokeStyle = "black";
+      ctx.lineWidth = 2;
+      ctx.lineCap = "round";
+      ctx.stroke();
+    }
+
+    function stopDraw() {
+      drawing = false;
+      ctx.closePath();
+    }
+
+    function clearCanvas() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+    }
+
+    function saveImage() {
+      const link = document.createElement("a");
+      link.download = "scribble.png";
+      link.href = canvas.toDataURL();
+      link.click();
+    }
+
+    canvas.addEventListener("mousedown", startDraw);
+    canvas.addEventListener("mousemove", draw);
+    canvas.addEventListener("mouseup", stopDraw);
+    canvas.addEventListener("mouseout", stopDraw);
+  </script>
+</body>
+</html>
